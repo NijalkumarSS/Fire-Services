@@ -1,0 +1,11 @@
+.backgroundColour{
+    background: linear-gradient(to bottom, #e52d27, #b31217);
+}
+
+.textColour{
+    /* color: linear-gradient(to bottom, #e52d27, #b31217); */
+    color:#e52d27;
+}
+.textstyle{
+    font-family: 'Times New Roman', Times, serif;
+}
