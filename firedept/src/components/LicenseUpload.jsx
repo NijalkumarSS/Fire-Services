@@ -69,7 +69,7 @@ const LicenseUpload = () => {
               </div>
         </div>
                     <footer className=" py-3 border-top mt-5">
-                      <h1>hii</h1>
+                      
                         <div className="container text-center">
                             <p className="mb-1" style={{ fontSize: '1rem', color: '#666' }}>
                                 © 2025 Fire Safety Authority. All rights reserved.
