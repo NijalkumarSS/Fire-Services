@@ -63,6 +63,7 @@ const LicenseUpload = () => {
                   rel="noopener noreferrer"
                   className="btn btn-warning btn-sm text-white"
                   style={{ borderRadius: '8px', padding: '10px 20px' }}
+                  gjg
                 >
                   Upload Now
                 </a>
