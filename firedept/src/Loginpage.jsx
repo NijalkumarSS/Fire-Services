@@ -16,7 +16,7 @@ const LoginPage = () => {
 
 
  
-  const [username, setEmail] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
@@ -24,25 +24,25 @@ const handleLogin = async (e) => {
   e.preventDefault();
   try {
     const response = await axios.post("http://localhost:8080/auth/login", {
-      username,
+      email,
       password,
     });
 
     const data = response.data;
+    
 
-    // ✅ Store token and role in localStorage
     localStorage.setItem("token", data.token);
     console.log(data.token);
     const name = data.username
-    const email = data.email
-    console.log(name);
-    console.log(email);
+    const useremail = data.email
     
-    
-    // localStorage.setItem("role", data.role); // Optional, if your backend returns role
-
-    // ✅ Redirect to home page
-    navigate("/userspage"); // Change this to your desired route
+  
+    alert("Login Successful")
+    navigate("/userspage",{
+      state: {
+        username:name,
+        useremail: useremail,
+      }});
 
   } catch (error) {
     if (error.response && error.response.status === 401) {
@@ -53,6 +53,8 @@ const handleLogin = async (e) => {
     }
   }
 };
+
+
 
   return (
 
@@ -69,27 +71,28 @@ const handleLogin = async (e) => {
       <div className='d-flex flex-column'> 
 
       <form onSubmit={handleLogin} style={{marginTop :'5rem'}}>
-      <div className="flex-grow-1 d-flex justify-content-end  align-items-center" style={{marginRight: "14rem",marginTop :'3rem'}}>
+      <div className="flex-grow-1 d-flex justify-content-center  align-items-center" style={{marginTop :'3rem'}}>
         <div className="card shadow-sm p-4" style={{ maxWidth: '450px', width: '100%',height:"440px" }}>
-          <h2 className="fw-bold mb-1">Login</h2>
+          <h2 className="fw-bold mb-1 textstyle">Login</h2>
           <p className="text-muted h6">Enter your credentials to access your account</p>
 
-          <div className="mb-3 mt-3">
-            <label htmlFor="text" className="form-label h5">Username<span className="text-danger">*</span></label>
-            <input type="text" className="form-control h5" name="username" placeholder="Enter your name" 
-            value={username}
+          <label htmlFor="text" className="form-label h5 mt-3 textstyle">Email<span className="text-danger">{email === '' ? "*" : ''}</span></label>
+
+          <div className="mb-3 input-group">
+            <span className='input-group-text'><i className="bi bi-person-circle"></i></span><input type="text" className="form-control" name="email" placeholder="Enter your email" 
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             />
           </div>
           
-          <div className="mb-3">
-            <div className="d-flex justify-content-between">
-              <label htmlFor="password" className="form-label h5">Password
-              <span className="text-danger">*</span>
+          <div className="d-flex justify-content-between">
+              <label htmlFor="password" className="form-label h5 textstyle">Password
+              <span className="text-danger">{password === '' ? '*' : ''}</span>
               </label>
             </div>
-            <input type="password" className="form-control h5" name="password" placeholder="Password"
+          <div className="mb-2 input-group">  
+            <span className='input-group-text'><i className="bi bi-shield-lock-fill"></i></span><input type="password" className="form-control" name="password" placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

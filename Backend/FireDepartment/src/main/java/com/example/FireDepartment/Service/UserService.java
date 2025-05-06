@@ -3,10 +3,13 @@ package com.example.FireDepartment.Service;
 import com.example.FireDepartment.Entity.Signup;
 import com.example.FireDepartment.Entity.User;
 import com.example.FireDepartment.Entity.UserDocument;
+import com.example.FireDepartment.Entity.adminlogin;
 import com.example.FireDepartment.Repository.SignpRepository;
 import com.example.FireDepartment.Repository.UserDocumentRepository;
 import com.example.FireDepartment.Repository.UserRepository;
+import com.example.FireDepartment.Repository.adminRepository;
 import com.example.FireDepartment.dto.SignupRequest;
+import com.example.FireDepartment.dto.adminrequest;
 import com.example.FireDepartment.dto.userrequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -47,7 +51,9 @@ public class UserService {
     @Autowired
     private UserDocumentRepository userDocumentRepository;
 
-public UserDocument createUserDocument(String building, String documentType, String designation, String location,
+public UserDocument createUserDocument(String uploadername,Integer age,String dob, String gender, Integer adharno,
+                                       Integer pancardno, String address,
+                                       String building, String documentType, String designation, String location,
                                        Long pincode, MultipartFile file, String notes) {
 
     try {
@@ -76,12 +82,18 @@ public UserDocument createUserDocument(String building, String documentType, Str
 
         // Now create UserDocument entity
         UserDocument ud = new UserDocument();
+        ud.setUploadername(uploadername);
+        ud.setAge(age);
+        ud.setAdharno(adharno);
+        ud.setAddress(address);
+        ud.setGender(gender);
+        ud.setPancardno(pancardno);
         ud.setBuildingType(building);
         ud.setDocumentType(documentType);
         ud.setDesignation(designation);
         ud.setLocation(location);
         ud.setPincode(pincode);
-        ud.setFileName(fileName); // IMPORTANT: save file name
+        ud.setFileName(fileName); 
         ud.setNotes(notes);
 
         return userDocumentRepository.save(ud);
@@ -91,5 +103,20 @@ public UserDocument createUserDocument(String building, String documentType, Str
     }
 }
 
+@Autowired
+private adminRepository adminrepository;
+public adminlogin adminlogin(adminrequest admin){
+    adminlogin ad=new adminlogin();
+
+    ad.setAdminname(admin.getAdminname());
+    ad.setEmail(admin.getEmail());
+    ad.setPhonenumber(admin.getPhonenumber());
+    ad.setPassword(admin.getPassword());
+    return adminrepository.save(ad);
+}
+
+    public List<UserDocument> getAllProducts() {
+        return userDocumentRepository.findAll();
+    }
 
 }

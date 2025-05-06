@@ -16,9 +16,9 @@ public class jwtUtils {
 
     private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes());
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(CustomUserDetailsImpl userDetails){
         return Jwts.builder()
-                .subject(userDetails.getUsername())
+                .subject(userDetails.getEmail())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 *60 *60))
                 .signWith(SECRET_KEY, Jwts.SIG.HS256)

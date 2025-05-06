@@ -17,6 +17,7 @@ import UserContent from './components/UserContent'
 import UploadContent from './components/UploadContent'
 import LicenseUpload from './components/LicenseUpload'
 import Overview from './components/Overview'
+import UploadSuccess from './components/UploadSuccess'
 
 
 
@@ -39,11 +40,12 @@ function App() {
         <Route path='/adminsignup' element={<AdminSignUp/>}/>
         <Route path='/adminlogin' element={<AdminLogin/>} />
         <Route path='/userspage' element={<UsersPage/>} /> 
-        <Route path='/uploaddocument' element={<UploadDocument/>}/>
         <Route path='/usercontent' element={<UserContent/>} />
         <Route path='/uploadcontent' element={<UploadContent/>} />
         <Route path='/licenseupload' element={<LicenseUpload/>} />
         <Route path='/overview' element={<Overview/>}/>
+        <Route path='/uploaddocument' element={<UploadDocument/>}></Route>
+        <Route path='/uploadsuccess' element={<UploadSuccess/>}/>
       </Routes>
     </BrowserRouter>
     </>

@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { Link } from 'react-router-dom';
 import LoginPage from '../Loginpage';
+import UploadDocument from './UploadDocument';
 
 function HeroSection() {
     return (

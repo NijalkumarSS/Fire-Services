@@ -2,21 +2,41 @@
 
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
+import { useEffect } from "react";
 
 const Building= () => {
-  const [buildings, setBuildings] = useState([
-    { id: 1, name: "Building A - Main Office", address: "123 Main St, New York, NY", type: "Commercial", status: "Not Complete", pincode: "10001", completed: false },
-    { id: 2, name: "Building B - Warehouse", address: "456 Storage Ave, New York, NY", type: "Industrial", status: "Not Complete", pincode: "10002", completed: false },
-    { id: 3, name: "Building C - Retail Store", address: "789 Market St, New York, NY", type: "Commercial", status: "Not Complete", pincode: "10003", completed: false },
-    { id: 4, name: "Building D - Apartment Complex", address: "101 Residential Blvd, New York, NY", type: "Residential", status: "Not Complete", pincode: "10004", completed: false },
-    { id: 5, name: "Building E - Data Center", address: "202 Tech Park, New York, NY", type: "Industrial", status: "Not Complete", pincode: "10005", completed: false },
-  ]);
+
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8080/project/getuploads')
+      .then(response => {
+        const enrichedData = response.data.map(item => ({
+          ...item,
+          status: "Not complete",
+          completed: false
+        }));
+        setProducts(enrichedData);
+      })
+      .catch(error => {
+        console.error("Error fetching product data:", error);
+      });
+  }, []);
+
+  // const [buildings, setBuildings] = useState([
+  //   { id: 1, name: " - Main Office", address: "123 Main St, New York, NY", type: "Commercial", status: "Not Complete", pincode: "10001", completed: false },
+  //   { id: 2, name: "Building B - Warehouse", address: "456 Storage Ave, New York, NY", type: "Industrial", status: "Not Complete", pincode: "10002", completed: false },
+  //   { id: 3, name: "Building C - Retail Store", address: "789 Market St, New York, NY", type: "Commercial", status: "Not Complete", pincode: "10003", completed: false },
+  //   { id: 4, name: "Building D - Apartment Complex", address: "101 Residential Blvd, New York, NY", type: "Residential", status: "Not Complete", pincode: "10004", completed: false },
+  //   { id: 5, name: "Building E - Data Center", address: "202 Tech Park, New York, NY", type: "Industrial", status: "Not Complete", pincode: "10005", completed: false },
+  // ]);
 
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleDelete = (id) => {
-    const updatedBuildings = buildings.filter((building) => building.id !== id);
-    setBuildings(updatedBuildings);
+    const updatedBuildings = products.filter((building) => building.id !== id);
+    setProducts(updatedBuildings);
   };
 
   const handleSearch = (e) => {
@@ -24,7 +44,7 @@ const Building= () => {
   };
 
   const handleCheckboxChange = (id) => {
-    const updatedBuildings = buildings.map((building) => {
+    const updatedBuildings = products.map((building) => {
       if (building.id === id) {
         const isCompleted = !building.completed;
         return {
@@ -35,16 +55,26 @@ const Building= () => {
       }
       return building;
     });
-    setBuildings(updatedBuildings);
+    setProducts(updatedBuildings);
   };
 
-  const filteredBuildings = buildings.filter((building) =>
-    building.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    building.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    building.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    building.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    building.pincode.includes(searchTerm)
+  const filteredBuildings = products.filter((building) =>{
+    const uploaderName = building.uploadername?.toLowerCase() || "";
+  const address = building.address?.toLowerCase() || "";
+  const buildingType = building.building?.toLowerCase() || "";
+  const status = building.status?.toLowerCase() || "";
+  const pincode = building.pincode?.toString() || "";
+
+  const search = searchTerm.toLowerCase();
+
+  return (
+    uploaderName.includes(search) ||
+    address.includes(search) ||
+    buildingType.includes(search) ||
+    status.includes(search) ||
+    pincode.includes(search)
   );
+});
 
   return (
     <div className="container mt-4">
@@ -67,6 +97,7 @@ const Building= () => {
             <th>Type</th>
             <th>Status</th>
             <th>Pincode</th>
+            <th>PDF</th>
             <th>Remove</th>
           </tr>
         </thead>
@@ -82,19 +113,33 @@ const Building= () => {
                   />
                 </td>
                 <td>
-                  <strong>{building.name}</strong>
+                  <strong>{building.uploadername}</strong>
                   <br />
                   <small>{building.address}</small>
                 </td>
-                <td>{building.type}</td>
+                <td>{building.building}</td>
                 <td>
                   {building.status === "Complete" ? (
-                    <span className="badge bg-success">{building.status}</span>
+                    <span className="badge rounded-pill bg-success">{building.status}</span>
                   ) : (
-                    <span className="badge bg-danger">{building.status}</span>
+                    <span className="badge rounded-pill bg-danger">{building.status}</span>
                   )}
                 </td>
                 <td>{building.pincode}</td>
+                <td>
+                  {building.pdfUrl ? (
+                    <a
+                      href={building.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-outline-warning"
+                    >
+                      View PDF
+                    </a>
+                  ) : (
+                    <span className="text-muted">No PDF</span>
+                  )}
+                </td>
                 <td>
                   <button
                     className="btn btn-sm btn-danger"

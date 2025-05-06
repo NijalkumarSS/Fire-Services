@@ -8,7 +8,7 @@ function NavbarComponent() {
   return (
     <nav className="navbar navbar-expand-lg border-bottom shadow-sm sticky-top backgroundColour">
       <div className="container-fluid ">
-        <Link className="navbar-brand fw-bold text-dark" to="/">
+        <Link className="navbar-brand fw-bold text-dark textstyle" to="/">
           <i className='fa-solid fa-fire-extinguisher me-2 text-light'></i>
           FireGuard
         </Link>
@@ -28,7 +28,7 @@ function NavbarComponent() {
               <Link to="/login" className="btn btn-outline-light me-2">Log In</Link>
             </li> */}
             <div className='dropdown'>
-            <button className='btn btn-outline-light dropdown-toggle me-2' data-bs-toggle="dropdown" >Log In
+            <button className='btn me-4 text-white' data-bs-toggle="dropdown" >Log In
             </button>
             <ul className='dropdown-menu bg-light'>
               <li ><Link to="/login" className="dropdown-item">
@@ -37,9 +37,9 @@ function NavbarComponent() {
               <i className="bi bi-shield-lock-fill me-2 textColour"></i>Admin</Link></li>
             </ul>
             </div>
-            <Link to="/signup">
+            {/* <Link to="/signup">
             <button className='btn btn-outline-light me-2'>Sign In
-            </button></Link>
+            </button></Link> */}
           </ul>
           </div>
         </div>

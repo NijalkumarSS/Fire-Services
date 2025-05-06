@@ -1,7 +1,21 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';    
+import { useNavigate } from 'react-router-dom';
 
-const LicenseUpload = () => {
+const LicenseUpload = ({username,useremail}) => {
+
+  const navigate = useNavigate();
+  console.log(useremail);
+
+  const handlesubmit = () => {
+    navigate("/uploaddocument",{
+      state: {
+        username:username,
+        useremail: useremail,
+      }})
+  }
+
+  
   return (
     <>
     <div className='container-fluid'>
@@ -57,16 +71,11 @@ const LicenseUpload = () => {
         
               <div className='text-center mt-5'>
                 <marquee behavior="" direction="">To upload your documents click the button</marquee>
-                <a
-                  href="/uploaddocument"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-warning btn-sm text-white"
+                <button className="btn btn-warning btn-sm text-white" onClick={handlesubmit}
                   style={{ borderRadius: '8px', padding: '10px 20px' }}
-                  gjg
                 >
                   Upload Now
-                </a>
+                </button>
               </div>
         </div>
                     <footer className=" py-3 border-top mt-5">

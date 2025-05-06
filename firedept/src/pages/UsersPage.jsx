@@ -5,10 +5,16 @@ import { Link } from "react-router-dom";
 import UserContent from "../components/UserContent";
 import UploadContent from "../components/UploadContent";
 import LicenseUpload from "../components/LicenseUpload";
+import { useLocation } from "react-router-dom";
 
 const UsersPage = () => {
+
+  const location = useLocation();
+  const { username, useremail } = location.state || {};
   const [activeView, setActiveView] = useState("requirements");
 
+  console.log(useremail);
+  
   const navItems = [
     { icon: "menu-down", label: "Description", move: "requirements" },
     { icon: "file-earmark-check", label: "Upload", move: "upload" },
@@ -109,7 +115,7 @@ const UsersPage = () => {
               </div>
             )}
             {activeView === "summary" && <UserContent/>}
-            {activeView === 'upload' &&  <LicenseUpload/>}
+            {activeView === 'upload' &&  <LicenseUpload username={username} useremail={useremail} />}
             {activeView === 'requirements' &&  <UploadContent/>}
            
           </div>

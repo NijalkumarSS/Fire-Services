@@ -17,9 +17,17 @@ public class UserDocument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    private String uploadername;
+    private Integer age;
+    private String dob;
+    private String gender;
+    private String Designation;
+    private Integer adharno;
+    private Integer pancardno;
+    private String address;
     private String BuildingType;
     private String DocumentType;
-    private String Designation;
     private String Location;
     private Long pincode;
 

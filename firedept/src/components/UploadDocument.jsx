@@ -1,11 +1,25 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap-icons/font/bootstrap-icons.css';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const UploadDocument = () => {
-    
+
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  const { username, useremail } = location.state || {};
+
   const [formData, setFormData] = useState({
+    uploadername:'',
+    age:'',
+    dob:'',
+    gender:'',
+    adharno:'',
+    pancardno:'',
+    address:'',
     building: '',
     documentType: '',
     designation: '',
@@ -29,13 +43,20 @@ const UploadDocument = () => {
 
     try {
       const uploadData = new FormData();
+      uploadData.append('uploadername',formData.uploadername);
+      uploadData.append('age', parseInt(formData.age, 10));
+      uploadData.append('dob',formData.dob)
+      uploadData.append('gender',formData.gender)
+      uploadData.append('designation', formData.designation);
+      uploadData.append('adharno',parseInt(formData.adharno,10))
+      uploadData.append('pancardno',parseInt(formData.pancardno ,10))
+      uploadData.append('address',formData.address)
       uploadData.append('building', formData.building);
       uploadData.append('documentType', formData.documentType);
-      uploadData.append('designation', formData.designation);
-      uploadData.append('location', formData.location);
-      uploadData.append('pincode', formData.pincode);
-      uploadData.append('notes', formData.notes);
-      uploadData.append('file', formData.file); // important!
+      uploadData.append('location', formData.location); 
+      uploadData.append('pincode', formData.pincode); 
+      uploadData.append('notes', formData.notes);   
+      uploadData.append('file', formData.file); 
 
       const response = await axios.post('http://localhost:8080/project/upload', uploadData, {
         headers: {
@@ -44,43 +65,206 @@ const UploadDocument = () => {
       });
 
       console.log('Upload Success:', response.data);
+      navigate("/uploadsuccess")
+
     } catch (error) {
       console.error('Upload Error:', error);
     }
   };
 
+ 
   return (
     <>
       <header className="backgroundColour p-2 border">
-        <div className="container-fluid">
-          <div className="row align-items-center">
-            <div className="col-8 d-flex align-items-center">
-              <i className="fa-solid fa-fire-extinguisher text-light fs-5 me-2"></i>
-              <h4 className="fw-bold text-dark mb-0">FireGuard</h4>
-            </div>
-            <div className="col-4 d-flex justify-content-end align-items-center">
-              <button
-                className="btn btn-sm btn-outline-light rounded me-2 position-relative"
-                style={{ fontSize: "14px", padding: "5px 10px" }}
-              >
-                <i className="bi bi-bell"></i>
-                <span className="badge position-absolute top-0 start-100 translate-middle bg-danger rounded-circle">
-                  10
-                </span>
-              </button>
-              <button className="rounded-circle p-3 border border-danger bg-white"></button>
-            </div>
-          </div>
-        </div>
-      </header>
+  <div className="d-flex justify-content-between align-items-center">
+    <div className="d-flex align-items-center">
+      <button
+        className="btn btn-outline-danger d-block d-md-none me-2"
+      >
+        <i className="bi bi-list fs-5"></i>
+      </button>
+      <i className="fa-solid fa-fire-extinguisher p-1 ms-1 text-light fs-5"></i>
+      <h4 className="fw-bold text-dark ms-2 mb-0 textstyle">FireGuard</h4>
+    </div>
+
+    <div className="d-flex align-items-center">
+      <button className="btn  btn-outline-light rounded-circle me-2 position-relative" style={{width:'40px',height:'40px'}}>
+        <i className="bi bi-bell" ></i>
+        <span className="badge position-absolute top-0 start-100 translate-middle bg-danger rounded-circle">
+          10
+        </span>
+      </button>
+
+      <div className="rounded-circle bg-light text-dark d-flex align-items-center justify-content-center me-2" style={{ width: "40px", height: "40px" }}>
+        J
+      </div>
+      <div className="d-flex flex-column ms-2">
+  <strong className="text-light">{username}</strong>
+  <small className="text-white">{useremail}</small>
+</div>
+
+    </div>
+  </div>
+</header>
 
       <div className="container my-5">
         <div className="row justify-content-center">
           <div className="col-12 col-md-10 col-lg-8">
-            <h2 className="fw-bold">Upload Document</h2>
+            <h2 className="fw-bold textstyle">Upload Document</h2>
             <p className="text-muted mb-4">Upload your fire safety documents for verification</p>
 
             <form onSubmit={handleSubmit}>
+              <label className='form-label fw-bold h5 mb-3' > Personal Details </label>
+            <div className="mb-3">
+                <label className="form-label fw-semibold">
+                  Name <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="uploadername"
+                  placeholder="Enter your name"
+                  value={formData.uploadername}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label fw-semibold">
+                  Age<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="age"
+                  placeholder="Enter your age"
+                  value={formData.age}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label fw-semibold">
+                  DOB<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  name="dob"
+                  placeholder=""
+                  value={formData.dob}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+  <label className="form-label d-block fw-semibold">Gender</label>
+
+  <div className="form-check form-check-inline">
+    <input
+      className="form-check-input"
+      type="radio"
+      name="gender"
+      id="genderMale"
+      value="Male"
+      checked={formData.gender === "Male"}
+      onChange={handleChange}
+      required
+    />
+    <label className="form-check-label" htmlFor="genderMale">Male</label>
+  </div>
+
+  <div className="form-check form-check-inline">
+    <input
+      className="form-check-input"
+      type="radio"
+      name="gender"
+      id="genderFemale"
+      value="Female"
+      checked={formData.gender === "Female"}
+      onChange={handleChange}
+    />
+    <label className="form-check-label" htmlFor="genderFemale">Female</label>
+  </div>
+
+  <div className="form-check form-check-inline">
+    <input
+      className="form-check-input"
+      type="radio"
+      name="gender"
+      id="genderOther"
+      value="Prefer not to say"
+      checked={formData.gender === "Prefer not to say"}
+      onChange={handleChange}
+    />
+    <label className="form-check-label" htmlFor="genderOther">Prefer not to say</label>
+  </div>
+</div>
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold">
+                Designation <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="designation"
+                  placeholder="Enter your Designation"
+                  value={formData.designation}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              
+              <div className="mb-3">
+                <label className="form-label fw-semibold">
+                  AdharCardNo.<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="adharno"
+                  placeholder=""
+                  value={formData.adharno}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label fw-semibold">
+                  Pan Card No.<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="pancardno"
+                  placeholder=""
+                  value={formData.pancardno}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="form-label fw-semibold">
+                  Permanent Address<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="address"
+                  placeholder="Enter your address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <hr />
+
+              <label className='form-label fw-bold h5 mb-4 mt-3' > Building Details </label>
+
               <div className="mb-3">
                 <label className="form-label fw-semibold">
                   Building <span className="text-danger">*</span>
@@ -121,28 +305,11 @@ const UploadDocument = () => {
 
               <div className="mb-3">
                 <label className="form-label fw-semibold">
-                  User Designation <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="designation"
-                  placeholder="Enter your Designation"
-                  value={formData.designation}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label fw-semibold">
                   Location <span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   className="form-control"
-
-
                   name="location"
                   placeholder="Enter the location of your building"
                   value={formData.location}
@@ -179,7 +346,7 @@ const UploadDocument = () => {
                     onChange={handleFileChange}
                     required
                   />
-                  <small className="text-muted">Supports PDF, JPG, PNG (Max 50MB)</small>
+                  <small className="text-muted"><marquee behavior="alternate" direction="left">Upload documents through PDF (Max 50MB)</marquee></small>
                 </div>
               </div>
 

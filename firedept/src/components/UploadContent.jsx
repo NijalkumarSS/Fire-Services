@@ -34,6 +34,7 @@ const UploadContent = () => {
                         Ensuring Safety Through Compliance and Certification
                         </p>
                     </div>
+                   
                 </header>
                 
                     <p>Obtaining a Fire NOC (No Objection Certificate) is a crucial step for property owners and businesses in Chennai to ensure safety compliance with fire safety regulations. Whether you’re constructing a new building, starting a business, or seeking to renew your license, having a Fire NOC is mandatory for certain types of properties. In this blog, we will delve into the importance of the Fire NOC and license 

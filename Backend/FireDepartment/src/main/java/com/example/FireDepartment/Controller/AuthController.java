@@ -58,11 +58,17 @@
 package com.example.FireDepartment.Controller;
 
 import com.example.FireDepartment.Entity.Signup;
+import com.example.FireDepartment.Entity.adminlogin;
 import com.example.FireDepartment.Repository.SignpRepository;
+import com.example.FireDepartment.Repository.adminRepository;
+import com.example.FireDepartment.Security.CustomAdminDetailsImpl;
+import com.example.FireDepartment.Security.CustomUserDetailsImpl;
 import com.example.FireDepartment.Security.jwtUtils;
+import com.example.FireDepartment.Service.mail;
 import com.example.FireDepartment.dto.Loginresponse;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -78,8 +84,24 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authManager;
+
+
+//    @Autowired
+//    private AuthenticationManager authManager;
+//
+//    @Autowired
+//    private AuthenticationManager manager;
+
+    private final AuthenticationManager userAuthManager;
+    private final AuthenticationManager adminAuthManager;
+
+    public AuthController(
+            @Qualifier("authenticationManager") AuthenticationManager userAuthManager,
+            @Qualifier("adminauthenticationManager") AuthenticationManager adminAuthManager
+    ) {
+        this.userAuthManager = userAuthManager;
+        this.adminAuthManager = adminAuthManager;
+    }
 
     @Autowired
     private SignpRepository signpRepository;
@@ -88,18 +110,18 @@ public class AuthController {
     private jwtUtils jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Signup user){
+    public ResponseEntity<?> login(@RequestBody Signup user) {
 
         try {
-            Authentication authentication = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername().trim(), user.getPassword())
+            Authentication authentication = userAuthManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail().trim(), user.getPassword())
             );
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            CustomUserDetailsImpl userDetails = (CustomUserDetailsImpl) authentication.getPrincipal();
 
             String token = jwtUtil.generateToken(userDetails);
 
-            Signup fullUser = signpRepository.findByUsername(user.getUsername());
+            Signup fullUser = signpRepository.findByEmail(user.getEmail());
 
             if (fullUser == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not found"));
@@ -114,7 +136,41 @@ public class AuthController {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid username or password"));
+                    .body(Map.of("error", "Invalid email or password"));
         }
     }
+
+    @Autowired
+    private adminRepository adrepo;
+    @PostMapping("/adminlogin")
+    public ResponseEntity<?> adminlogin(@RequestBody adminlogin user) {
+
+        try {
+            Authentication authentication = adminAuthManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+            );
+
+            CustomAdminDetailsImpl userDetails = (CustomAdminDetailsImpl) authentication.getPrincipal();
+
+//            String token = jwtUtil.generateToken(userDetails);
+
+            adminlogin fullUser = adrepo.findByEmail(user.getEmail());
+
+            if (fullUser == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not found"));
+            }
+
+            JSONObject response = new JSONObject();
+            response.put("username", fullUser.getAdminname());
+            response.put("email", fullUser.getEmail());
+//            response.put("token", token);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Invalid email or password"));
+        }
+    }
+
 }
