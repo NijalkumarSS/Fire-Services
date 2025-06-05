@@ -2,17 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom';    
 import { useNavigate } from 'react-router-dom';
 
-const LicenseUpload = ({username,useremail}) => {
+const LicenseUpload = () => {
 
   const navigate = useNavigate();
-  console.log(useremail);
 
   const handlesubmit = () => {
-    navigate("/uploaddocument",{
-      state: {
-        username:username,
-        useremail: useremail,
-      }})
+    navigate("/uploaddocument")
   }
 
   

@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import login from '../assets/login.jpg'
 import { useLocation } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const AdminLogin = () => {
 
@@ -27,13 +29,15 @@ const handleLogin = async (e) => {
     });
 
     const data = response.data;
-    
 
     localStorage.setItem("token", data.token);
     console.log(data.token);
     const username = data.username
     const useremail = data.email
- 
+          toast.success("Login Successful!", {
+            position: "top-center",
+            autoClose: 2000,
+          });
     navigate("/adminpage",
       {
         state:{
@@ -45,10 +49,13 @@ const handleLogin = async (e) => {
 
   } catch (error) {
     if (error.response && error.response.status === 401) {
-      alert("Invalid credentials!");
+        toast.error("Invalid Credentials ", {
+                position: "top-right",
+                autoClose: 3000,
+              });
     } else {
       console.error("Login error:", error);
-      alert("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     }
   }
 };
@@ -66,7 +73,8 @@ const handleLogin = async (e) => {
       height:'100vh'
   
     }} >
-      
+      <div align='center'>       <ToastContainer /></div>
+
       <div className='d-flex flex-column'> 
 
       <form onSubmit={handleLogin} style={{marginTop :'5rem'}}>

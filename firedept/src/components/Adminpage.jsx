@@ -4,15 +4,24 @@ import Overview from "./Overview";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import Documents from "./Documents";
+
+import NotificationsPanel from "../pages/NotificationsPanel";
+import DashboardSection from "./DashboardSection";
+import NocLicenseIssuance from "../pages/NocLicenseIssuance";
 
 const Adminpage = () => {
-
+  
+   
   const location = useLocation();
   const {username,useremail} = location.state || {} ;
+
+  
   
   const [visible, setVisible] = useState(false);
-  const [activeView, setActiveView] = useState("building");
+  const [activeView, setActiveView] = useState("overview");
   const [showModal, setShowModal] = useState(false);
+  const [role, setRole] = useState('overview');
 
   const toggleModal = () => setShowModal(!showModal);
   const toggleSidebar = () => setVisible(!visible);
@@ -20,8 +29,9 @@ const Adminpage = () => {
   const rowButton = [
     { head: "Overview", move: "overview" },
     { head: "Buildings", move: "building" },
-    { head: "Documents", move: "document" },
-    { head: "Alerts", move: "alerts" },
+    { head: "Documents", move: "documents" },
+    { head: "Notification", move: "notification" },
+   
     { head: "Users", move: "users" },
   ];
 
@@ -54,7 +64,6 @@ const Adminpage = () => {
     }
   };
 
-  // Auto-initialize modal on mount
   useEffect(() => {
     if (modalRef.current) {
       new window.bootstrap.Modal(modalRef.current);
@@ -65,6 +74,15 @@ const Adminpage = () => {
     window.bootstrap.Modal.getOrCreateInstance(modalRef.current).show();
   };
 
+  
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+
+ 
 
   return (
     <>
@@ -89,14 +107,31 @@ const Adminpage = () => {
         </span>
       </button>
 
-      <div className="rounded-circle bg-light text-dark d-flex align-items-center justify-content-center me-2" style={{ width: "30px", height: "30px" }}>
-        J
+       <div className="dropdown text-end">
+      <div
+        onClick={toggleDropdown}
+        className="rounded-circle  bg-light text-dark d-flex align-items-center justify-content-center me-2"
+        style={{ width: "30px", height: "30px", cursor: "pointer" }}
+      >
+        {username.trim().charAt(0).toUpperCase()}
       </div>
 
-      <div className="d-flex flex-column">
-        <strong className="text-dark">{username}</strong>
-        <small className="text-muted">{useremail}</small>
-      </div>
+      {showDropdown && (
+        <div
+          className="dropdown-menu show p-3 shadow"
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: '50px',
+            minWidth: '200px',
+            zIndex: 1000,
+          }}
+        >
+          <strong className="d-block text-dark">{username}</strong>
+          <small className="text-muted">{useremail}</small>
+        </div>
+      )}
+    </div>
     </div>
   </div>
 </header>
@@ -114,35 +149,43 @@ const Adminpage = () => {
           <p>Fire monitoring system</p>
 
           <ul className="list-group mb-4">
-            <li className="list-group-item-action p-2">
-              <i className="bi bi-bar-chart me-2"></i>Dashboard
-            </li>
+            
             {[
-              { icon: "building", label: "Buildings" },
-              { icon: "file-earmark-check", label: "Documents" },
-              { icon: "exclamation-triangle", label: "Alerts" },
-              { icon: "people", label: "Users" },
-            ].map(({ icon, label }) => (
+              { icon: "bar-chart", label: "Overview",move: "overview" },
+              { icon: "building", label: "Buildings",move: "building",num:{} },
+              { icon: "file-earmark-check", label: "Documents",move: "documents" },
+              { icon: "bell-fill", label: "Notification",move: "notification" },
+              { icon: "file-earmark-text", label: "NOC Certificate",move: "license" },
+            ].map(({ icon, label, move }) => (
               <li
                 key={label}
-                className="list-group-item-action p-2 d-flex justify-content-between align-items-center"
+                className={`list-group-item-action p-2 d-flex justify-content-between align-items-center ${activeView === move? 'bg-warning text-white' :'bg-light' }`}
+
+                onClick={() => {
+                  setActiveView(move)
+                  
+                }}
+
+                onChange ={() => {
+                  setRole(move)
+                }}
+              
               >
                 <span>
                   <i className={`bi bi-${icon} me-2`}></i>
                   {label}
                 </span>
-                <span className="badge bg-danger">5</span>
               </li>
             ))}
           </ul>
 
           <ul className="list-group mb-4">
-            <li className="list-group-item-action p-2">
+            <li className="list-group-item-action p-2" type="none">
               <i className="bi bi-gear me-2"></i>Settings
             </li>
-            <li className="list-group-item-action p-2">
+            <li className="list-group-item-action p-2" type="none">
               <i className="bi bi-question-octagon me-2"></i>Help & Support
-            </li>
+            </li> 
           </ul>
 
           <div className="mt-auto">
@@ -154,11 +197,16 @@ const Adminpage = () => {
 
         <div className="flex-grow-1 bg-light min-vh-100 p-3">
           <div className="d-flex justify-content-between align-items-start flex-wrap">
-            <div>
-              <h3 className="fw-bold">Admin Dashboard</h3>
-              <p>Monitor and manage your fire safety system</p>
-            </div>
-            <div className="d-flex align-items-start">
+            
+      
+
+       <div className="container text-center mt-4">
+      
+      <DashboardSection role={role} />
+    </div>
+ 
+           
+            <div className="d-flex flex-column align-items-end">
               <div className="dropdown">
                 <button
                   className="btn btn-sm btn-outline-danger dropdown-toggle"
@@ -177,34 +225,17 @@ const Adminpage = () => {
                   <li>
                     <button className="dropdown-item" onClick={openModal}><i className="bi bi-people me-2"></i>Add Admin</button>
                   </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      <i className="bi bi-exclamation-triangle me-2"></i>Create Alert
-                    </a>
-                  </li>
                 </ul>
               </div>
             </div>
           </div>
 
-          <div className="btn-group mt-3 d-flex flex-wrap">
-            {rowButton.map(({ head, move }) => (
-              <button
-                key={move}
-                className={`btn btn-outline-warning m-1 ${
-                  activeView === move ? "bg-dark text-light" : ""
-                }`}
-                onClick={() => setActiveView(move)}
-              >
-                {head}
-              </button>
-            ))}
-          </div>
-
           <div className="mt-4">
             {activeView === "building" && <Building />}
             {activeView === "overview" && <Overview />}
-            {activeView === "overview" && <Overview />}
+            {activeView === "documents" && <Documents/>}
+            {activeView === "notification" && <NotificationsPanel/>}
+            {activeView === 'license' && <NocLicenseIssuance/>}
           </div>
         </div>
       </div>

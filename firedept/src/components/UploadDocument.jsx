@@ -9,8 +9,9 @@ const UploadDocument = () => {
 
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const { username, useremail } = location.state || {};
+  const storedEmail = localStorage.getItem('GetEmail');
+  const storedName = localStorage.getItem('GetName');
+  
 
   const [formData, setFormData] = useState({
     uploadername:'',
@@ -20,13 +21,16 @@ const UploadDocument = () => {
     adharno:'',
     pancardno:'',
     address:'',
+    email:'',
+    mobilenumber:'',
     building: '',
     documentType: '',
     designation: '',
     location: '',
     pincode: '',
     file: null,
-    notes: ''
+    notes: '',
+    image:null
   });
 
   const handleChange = (e) => {
@@ -34,44 +38,52 @@ const UploadDocument = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const handleFileChange = (e) => {
+  //   setFormData((prev) => ({ ...prev, file: e.target.files[0],image: e.target.files[0] }));
+  // };
   const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, file: e.target.files[0] }));
-  };
+  const { name, files } = e.target;
+  setFormData((prev) => ({
+    ...prev,
+    [name]: files[0]
+  }));
+};
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); 
 
-    try {
-      const uploadData = new FormData();
-      uploadData.append('uploadername',formData.uploadername);
-      uploadData.append('age', parseInt(formData.age, 10));
-      uploadData.append('dob',formData.dob)
-      uploadData.append('gender',formData.gender)
-      uploadData.append('designation', formData.designation);
-      uploadData.append('adharno',parseInt(formData.adharno,10))
-      uploadData.append('pancardno',parseInt(formData.pancardno ,10))
-      uploadData.append('address',formData.address)
-      uploadData.append('building', formData.building);
-      uploadData.append('documentType', formData.documentType);
-      uploadData.append('location', formData.location); 
-      uploadData.append('pincode', formData.pincode); 
-      uploadData.append('notes', formData.notes);   
-      uploadData.append('file', formData.file); 
-
-      const response = await axios.post('http://localhost:8080/project/upload', uploadData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-
-      console.log('Upload Success:', response.data);
-      navigate("/uploadsuccess")
-
-    } catch (error) {
-      console.error('Upload Error:', error);
-    }
-  };
-
+  const verify = async (e) => {
+    e.preventDefault();
+    try{
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+      if (!emailRegex.test(formData.email)) {
+        alert("Please enter a valid Email Address");
+      } else if (formData.adharno.length > 12 || formData.adharno.length < 12) {
+        alert('Please enter valid Adhar Number');
+      } else if (formData.pancardno.length > 10 || formData.pancardno.length < 10) {
+        alert('Please enter valid Pan Card Number');
+      } else if (formData.mobilenumber.length > 10 || formData.mobilenumber.length < 10) {
+        alert('Please enter valid Mobile Number');
+      } else {
+        const email = formData.email
+    const response = await axios.post("http://localhost:8080/otp/send",{email})
+    console.log(email);
+    if (response.data === "OTP sent to email.") {
+  navigate("/verifyotp", { state: { email, formData } });
+}
+else{
+      alert("OTP not sent")
+      console.log(email);
+    } 
+  }
+}
+catch(error){
+  alert(error);
+}  
+};
+  const backwardd = () => {
+    navigate("/userspage")
+  }
+  
  
   return (
     <>
@@ -99,8 +111,8 @@ const UploadDocument = () => {
         J
       </div>
       <div className="d-flex flex-column ms-2">
-  <strong className="text-light">{username}</strong>
-  <small className="text-white">{useremail}</small>
+  <strong className="text-light">{storedName}</strong>
+  <small className="text-white">{storedEmail}</small>
 </div>
 
     </div>
@@ -113,7 +125,7 @@ const UploadDocument = () => {
             <h2 className="fw-bold textstyle">Upload Document</h2>
             <p className="text-muted mb-4">Upload your fire safety documents for verification</p>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={verify}>
               <label className='form-label fw-bold h5 mb-3' > Personal Details </label>
             <div className="mb-3">
                 <label className="form-label fw-semibold">
@@ -143,6 +155,7 @@ const UploadDocument = () => {
                   required
                 />
               </div>
+
               <div className="mb-3">
                 <label className="form-label fw-semibold">
                   DOB<span className="text-danger">*</span>
@@ -201,6 +214,20 @@ const UploadDocument = () => {
     <label className="form-check-label" htmlFor="genderOther">Prefer not to say</label>
   </div>
 </div>
+<div className="mb-3">
+                <label className="form-label fw-semibold">
+                  Email<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="email"
+                  placeholder="Enter your mail"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
 
               <div className="mb-3">
                 <label className="form-label fw-semibold">
@@ -257,6 +284,19 @@ const UploadDocument = () => {
                   name="address"
                   placeholder="Enter your address"
                   value={formData.address}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label fw-semibold">
+                  Mobile Number <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  name="mobilenumber"
+                  value={formData.mobilenumber}
                   onChange={handleChange}
                   required
                 />
@@ -333,6 +373,24 @@ const UploadDocument = () => {
                 />
               </div>
 
+            <div className="mb-3">
+            <label className="form-label fw-semibold">
+              Image<span className="text-danger">*</span>
+            </label>
+            <div className="border rounded p-4 text-center" style={{ borderStyle: 'dashed' }}>
+              <input
+                type="file"
+                name="image"
+                accept=".pdf,.jpg,.png"
+                className="form-control mb-2"
+                onChange={handleFileChange}
+                required
+              />
+              <small className="text-muted">Upload your Image</small>
+            </div>
+          </div>
+
+
               <div className="mb-3">
                 <label className="form-label fw-semibold">
                   Document File <span className="text-danger">*</span>
@@ -377,7 +435,7 @@ const UploadDocument = () => {
               </div>
 
               <div className="d-flex flex-column flex-sm-row justify-content-between gap-5">
-                <button type="button" className="btn btn-outline-secondary w-25 w-sm-auto">
+                <button type="button" className="btn btn-outline-secondary w-25 w-sm-auto" onClick={backwardd}>
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-secondary w-25 w-sm-auto">

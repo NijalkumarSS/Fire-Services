@@ -18,11 +18,22 @@ import UploadContent from './components/UploadContent'
 import LicenseUpload from './components/LicenseUpload'
 import Overview from './components/Overview'
 import UploadSuccess from './components/UploadSuccess'
+import Documents from './components/Documents'
+import NotificationsPanel from './pages/NotificationsPanel'
+import NotificationHistory from './components/NotificationHistory'
+import VerifyOTP from './components/VerifyOTP'
+import VerifySignup from './components/VerifySignup'
+import NocPreview from './pages/NocPreview'
+import NocCertificate from './pages/NocCertificate'
+import ForgotPassword from './components/ForgotPassword'
+import ResetPassword from './components/ResetPassword'
+import VerifyForgotPassword from './components/VerifyForgotPassword'
+
 
 
 
 function App() {
-  const [count, setCount] = useState(0)
+   
 
   return (
     <> 
@@ -46,8 +57,20 @@ function App() {
         <Route path='/overview' element={<Overview/>}/>
         <Route path='/uploaddocument' element={<UploadDocument/>}></Route>
         <Route path='/uploadsuccess' element={<UploadSuccess/>}/>
+        <Route path='documents' element={<Documents/>}/>
+        <Route path='/notificationpanel' element={<NotificationsPanel/>}/>
+        <Route path="/notifications" element={<NotificationHistory />} />
+        <Route path="/verifyotp" element={<VerifyOTP />} />
+        <Route path='/verifysignup' element = {<VerifySignup/>}/>
+        <Route path='/preview' element = {<NocPreview/>}/>
+        <Route path='/certificate' element ={<NocCertificate/>}/>
+        <Route path='/forgotpassword' element={<ForgotPassword/>}/>
+        <Route path='/resetpassword' element={<ResetPassword/>}/>
+        <Route path='/verifyforgotpass' element={<VerifyForgotPassword/>}/>
       </Routes>
     </BrowserRouter>
+
+    
     </>
   )
 }

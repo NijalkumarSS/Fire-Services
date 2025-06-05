@@ -1,6 +1,23 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import VerifyOTP from './VerifyOTP';
 
 const Overview = () => {
+
+  const [count ,setCount] = useState();
+  const [falsecount, setFalsecount] = useState();
+
+  useEffect(() => {
+    axios.get("http://localhost:8080/project/count")
+    .then(response => {
+            setCount(response.data.count)
+            setFalsecount(response.data.falsecount)
+    })
+    .catch(error => {
+      console.log(error);
+    }
+    )
+  })
   return (
     <>
     <div className='container-fluid'>
@@ -9,21 +26,21 @@ const Overview = () => {
         {[
           {
             title: "Total Buildings",
-            value: 24,
+            value:`${count}`,
             note: "+2 from last month",
             icon: "building",
             noteColor: "text-success",
           },
           {
             title: "Pending Documents",
-            value: 12,
+            value:`${falsecount}`,
             note: "+2 from last week",
             icon: "file-earmark-check",
             noteColor: "text-success",
           },
           {
-            title: "Active Alerts",
-            value: 5,
+            title: "Approved",
+            value: 0, 
             note: "+2 from yesterday",
             icon: "exclamation-triangle",
             noteColor: "text-success",
@@ -51,6 +68,8 @@ const Overview = () => {
         ))}
       </div>
       </div>
+
+
 
     </>
   )

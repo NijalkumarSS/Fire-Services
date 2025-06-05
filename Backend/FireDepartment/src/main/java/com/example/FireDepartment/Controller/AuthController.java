@@ -84,14 +84,6 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-
-
-//    @Autowired
-//    private AuthenticationManager authManager;
-//
-//    @Autowired
-//    private AuthenticationManager manager;
-
     private final AuthenticationManager userAuthManager;
     private final AuthenticationManager adminAuthManager;
 
@@ -138,9 +130,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Invalid email or password"));
         }
-    }
-
-    @Autowired
+    }@Autowired
     private adminRepository adrepo;
     @PostMapping("/adminlogin")
     public ResponseEntity<?> adminlogin(@RequestBody adminlogin user) {

@@ -31,7 +31,7 @@ function NavbarComponent() {
             <button className='btn me-4 text-white' data-bs-toggle="dropdown" >Log In
             </button>
             <ul className='dropdown-menu bg-light'>
-              <li ><Link to="/login" className="dropdown-item">
+              <li ><Link to="/login" className="dropdown-item me-2">
                 <i className="bi bi-person-circle me-2 textColour"></i> User</Link></li>
               <li><Link to="/adminlogin" className="dropdown-item">
               <i className="bi bi-shield-lock-fill me-2 textColour"></i>Admin</Link></li>

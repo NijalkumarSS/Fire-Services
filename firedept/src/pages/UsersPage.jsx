@@ -1,19 +1,18 @@
 import React from "react";
 import { useState } from "react";
-import UploadDocument from "../components/UploadDocument";
-import { Link } from "react-router-dom";
 import UserContent from "../components/UserContent";
 import UploadContent from "../components/UploadContent";
 import LicenseUpload from "../components/LicenseUpload";
-import { useLocation } from "react-router-dom";
+import { logout } from "../components/logout";
+import { useNavigate } from "react-router-dom";
 
 const UsersPage = () => {
 
-  const location = useLocation();
-  const { username, useremail } = location.state || {};
+  const navigate = useNavigate()
   const [activeView, setActiveView] = useState("requirements");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  console.log(useremail);
+
   
   const navItems = [
     { icon: "menu-down", label: "Description", move: "requirements" },
@@ -26,6 +25,17 @@ const UsersPage = () => {
     { icon: "menu-up", label: "Summary", move: "summary" },
     { icon: "people", label: "Users", move: "user" },
   ];
+
+  // const logoutFunc = () => {
+  //   logout();
+  //   const storedEmail = localStorage.getItem('GetEmail')
+  //   if(storedEmail === null){
+  //     navigate('/')
+  //   }
+  //   else{
+  //     navigate('/userspage')
+  //   }
+  // } 
 
   return (
     <>
@@ -95,9 +105,9 @@ const UsersPage = () => {
             </ul>
 
             <div className="mt-auto">
-              <button className="btn btn-link text-danger">
-                <i className="bi bi-box-arrow-right me-2"></i>Logout
-              </button>
+            <button className="btn text-danger" onClick={() => setShowLogoutModal(true)}>
+              <i className="bi bi-box-arrow-right me-2"></i>Logout
+            </button>
             </div>
           </div>
           <div className="col-lg-10 ">
@@ -115,13 +125,60 @@ const UsersPage = () => {
               </div>
             )}
             {activeView === "summary" && <UserContent/>}
-            {activeView === 'upload' &&  <LicenseUpload username={username} useremail={useremail} />}
+            {activeView === 'upload' &&  <LicenseUpload/>}
             {activeView === 'requirements' &&  <UploadContent/>}
            
           </div>
           
         </div>
       </div>
+
+
+      
+
+            {showLogoutModal && (
+        <div className="modal fade show" tabIndex="-1" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Logout</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowLogoutModal(false)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to logout?</p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowLogoutModal(false)}
+                >
+                  No
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => {
+                    setShowLogoutModal(false);
+                    logout();
+                    const storedEmail = localStorage.getItem("GetEmail");
+                    if (storedEmail === null) {
+                      navigate("/");
+                    } else {
+                      navigate("/userspage");
+                    }
+                  }}
+                >
+                  Yes, Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   );
 };
